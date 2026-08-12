@@ -1,0 +1,43 @@
+schema_version: 1
+name: example
+version: 0.1.0
+description: A module template that reverses a string
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/template
+
+runtime:
+  # {venv} is expanded by the hub to the virtualenv it created for this module,
+  # so the manifest stays valid on a machine with a different layout. The
+  # command is an argv list, never a shell string.
+  command: ["{venv}/bin/python", "-m", "vahub_mod_example"]
+  # {state} and {config} are available too:
+  # cwd: "{state}/modules/example"
+  # In production, give the module its own account:
+  # user: vahub-mod-example
+
+config:
+  # Only these keys are passed to the process. The hub's own environment, and
+  # every other module's secrets, stay invisible.
+  required: []
+  optional: [EXAMPLE_GREETING]
+
+health:
+  interval_s: 60
+  timeout_s: 5
+
+restart:
+  max_retries: 5
+  backoff_base_s: 2
+  reset_after_s: 600
+  startup_timeout_s: 20
+
+audit:
+  # Names of config keys whose values must never appear in an audit record.
+  redact: []
+
+tools:
+  # What the module claims to offer, and how dangerous each tool is. This is
+  # advisory: the policy in vahub.yaml decides what may actually be called, so
+  # describing yourself generously grants you nothing.
+  reverse:
+    class: read
+    description: Return the given text reversed

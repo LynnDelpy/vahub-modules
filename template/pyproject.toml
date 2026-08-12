@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vahub-mod-example"
+version = "0.1.0"
+description = "vahub module template (MCP server over stdio)"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+  # Every dependency needs an upper bound. An install done next year should
+  # resolve to what an install done today resolved to.
+  "mcp>=1.4,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vahub_mod_example"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]

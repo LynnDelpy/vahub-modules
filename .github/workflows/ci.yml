@@ -1,0 +1,141 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+    tags: ["modules/**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # One job per module. They share nothing, which is the point: a module that
+  # only builds because another module's dependencies happen to be installed is
+  # broken, and the hub gives each module its own virtualenv anyway.
+  module:
+    name: ${{ matrix.path }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - path: modules/time
+            package: vahub_mod_time
+          - path: modules/homeassistant
+            package: vahub_mod_homeassistant
+          - path: modules/transit
+            package: vahub_mod_transit
+          - path: modules/notify
+            package: vahub_mod_notify
+          - path: template
+            package: vahub_mod_example
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Lint
+        working-directory: ${{ matrix.path }}
+        run: pipx run ruff check .
+
+      - name: Install into an isolated venv
+        working-directory: ${{ matrix.path }}
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/python -m pip install ".[dev]"
+
+      - name: Test
+        working-directory: ${{ matrix.path }}
+        # Run against the installed package, not the source tree, so a packaging
+        # mistake fails here rather than on someone's hub.
+        run: .venv/bin/python -m pytest -q
+
+      - name: Start over stdio
+        working-directory: ${{ matrix.path }}
+        # The entry point must come up and exit when stdin reaches EOF. This
+        # catches an import error or a missing dependency that the tests, which
+        # import the package directly, would not.
+        run: timeout 30 .venv/bin/python -m ${{ matrix.package }} < /dev/null
+
+  # The manifests and the index are contracts with the hub, so they are checked
+  # against the hub's own models rather than a copy of the schema kept here.
+  contracts:
+    name: manifests and registry
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install vahub
+        run: python -m pip install "vahub @ git+https://github.com/LynnDelpy/vahub@main"
+
+      - name: Validate
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          from vahub.contracts.manifest import Manifest
+          from vahub.contracts.registry import GitSource, Registry
+
+          problems: list[str] = []
+
+          manifests: dict[str, Manifest] = {}
+          for path in sorted(Path("modules").glob("*/module.yaml")) + [Path("template/module.yaml")]:
+              try:
+                  manifest = Manifest.from_file(path)
+              except Exception as e:
+                  problems.append(f"{path}: {e}")
+                  continue
+              manifests[str(path.parent)] = manifest
+              directory = path.parent.name
+              # The template is deliberately named "example" while living in
+              # template/; every real module's name must match its directory,
+              # because the registry addresses it by that path.
+              if directory != "template" and manifest.name != directory:
+                  problems.append(f"{path}: name {manifest.name!r} does not match directory {directory!r}")
+              if "__health" in manifest.tools:
+                  problems.append(f"{path}: __health is reserved and must not be declared under tools")
+
+          registry = Registry.model_validate(json.loads(Path("registry.json").read_text()))
+          for name, entry in registry.modules.items():
+              if entry.latest and entry.latest not in entry.versions:
+                  problems.append(f"registry.json: {name}: latest {entry.latest!r} is not a published version")
+              for version, published in entry.versions.items():
+                  source = published.source
+                  if not isinstance(source, GitSource):
+                      continue  # a third-party entry may point anywhere
+                  if source.subdir != f"modules/{name}":
+                      continue  # not hosted in this repository
+                  expected_rev = f"modules/{name}/v{version}"
+                  if source.rev != expected_rev:
+                      problems.append(
+                          f"registry.json: {name} {version}: rev {source.rev!r} should be {expected_rev!r}"
+                      )
+                  manifest = manifests.get(f"modules/{name}")
+                  if manifest is None:
+                      problems.append(f"registry.json: {name}: no modules/{name}/module.yaml in this repo")
+                  elif manifest.version != version and version == entry.latest:
+                      problems.append(
+                          f"registry.json: {name}: latest is {version} but module.yaml says {manifest.version}"
+                      )
+
+          for problem in problems:
+              print(problem)
+          sys.exit(1 if problems else 0)
+          PY
+
+      - name: Check that every listed module has a README
+        run: |
+          for dir in modules/*/; do
+            test -f "$dir/README.md" || { echo "$dir has no README.md"; exit 1; }
+          done

@@ -1,0 +1,27 @@
+# The manifest the hub reads. `vahub module add time` copies this into
+# /etc/vahub/modules.d/ and expands {venv} to the virtualenv it created for this
+# module. Validated by vahub.contracts.manifest.Manifest.
+schema_version: 1
+name: time
+version: 0.1.0
+description: The current time and date, as ISO text or as a spoken phrase
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/time
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_time"]
+
+config:
+  optional: [TZ_DEFAULT]
+
+health:
+  # Nothing can go wrong that a probe would catch, so probe rarely.
+  interval_s: 300
+  timeout_s: 5
+
+tools:
+  get_current_time:
+    class: read
+    description: Current date and time as an ISO-8601 string
+  speak_current_time:
+    class: read
+    description: Current time as a short phrase for text to speech

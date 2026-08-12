@@ -1,0 +1,36 @@
+schema_version: 1
+name: notify
+version: 0.1.0
+description: Push notifications to a phone via ntfy or Pushover
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/notify
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_notify"]
+
+config:
+  # Nothing is unconditionally required: which keys matter depends on
+  # NOTIFY_BACKEND, and the health probe says which one is missing.
+  optional:
+    - NOTIFY_BACKEND
+    - NTFY_URL
+    - NTFY_TOPIC
+    - NTFY_TOKEN
+    - NTFY_TOKEN_FILE
+    - PUSHOVER_TOKEN
+    - PUSHOVER_TOKEN_FILE
+    - PUSHOVER_USER
+    - PUSHOVER_USER_FILE
+
+health:
+  interval_s: 120
+  timeout_s: 8
+
+audit:
+  # NTFY_TOPIC is a secret in practice: on the public ntfy.sh, anyone who knows
+  # the topic name can read and publish to it.
+  redact: [NTFY_TOPIC, NTFY_TOKEN, PUSHOVER_TOKEN, PUSHOVER_USER]
+
+tools:
+  send_push:
+    class: write
+    description: Send a push notification with a title, body and priority

@@ -1,0 +1,26 @@
+schema_version: 1
+name: transit
+version: 0.1.0
+description: Swiss public transport connections and departure boards
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/transit
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_transit"]
+
+config:
+  # The upstream API needs no key, so there is nothing this module must be
+  # given before it works.
+  optional: [TRANSIT_API_URL, TZ_DEFAULT]
+
+health:
+  # The probe is a real request to a public API. Every 30 seconds would be rude.
+  interval_s: 120
+  timeout_s: 8
+
+tools:
+  find_connections:
+    class: read
+    description: Journeys between two places, optionally arriving by a given time
+  next_departures:
+    class: read
+    description: Departure board for one station

@@ -1,0 +1,54 @@
+schema_version: 1
+name: homeassistant
+version: 0.2.0
+description: Lights, locks and sensor readings via Home Assistant
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/homeassistant
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_homeassistant"]
+  cwd: "{state}/modules/homeassistant"
+  # In production, give this module its own account and uncomment:
+  # user: vahub-mod-homeassistant
+
+config:
+  required: [HA_URL]
+  # HA_TOKEN is not listed as required because the token may instead come from
+  # the file named by HA_TOKEN_FILE, and "exactly one of these two" is not
+  # something the manifest can express. The health probe reports a missing
+  # token, so an unconfigured install shows up as degraded rather than silently
+  # answering nothing.
+  optional: [HA_TOKEN, HA_TOKEN_FILE, HA_VERIFY_SSL, HA_TIMEOUT_S]
+
+health:
+  interval_s: 30
+  timeout_s: 5
+
+restart:
+  max_retries: 5
+  backoff_base_s: 2
+  reset_after_s: 600
+  startup_timeout_s: 20
+
+audit:
+  redact: [HA_TOKEN]
+
+tools:
+  list_entities:
+    class: read
+    description: List entities and their state, filtered by domain
+  get_state:
+    class: read
+    description: State and attributes of one entity
+  light_turn_on:
+    class: write
+    description: Turn a light on, optionally at a brightness percentage
+  light_turn_off:
+    class: write
+    description: Turn a light off
+  lock_lock:
+    class: write
+    description: Lock a lock
+  lock_unlock:
+    # Opening a door is not the same kind of act as dimming a lamp.
+    class: destructive
+    description: Unlock a lock

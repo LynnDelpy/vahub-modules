@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-08-12",
+  "modules": {
+    "homeassistant": {
+      "description": "Lights, locks and sensor readings via Home Assistant",
+      "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/homeassistant",
+      "author": "vahub contributors",
+      "tags": ["home-automation", "lights", "locks", "sensors", "first-party"],
+      "latest": "0.2.0",
+      "versions": {
+        "0.2.0": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/homeassistant/v0.2.0",
+            "subdir": "modules/homeassistant"
+          },
+          "requires_config": ["HA_URL", "HA_TOKEN"],
+          "optional_config": ["HA_TOKEN_FILE", "HA_VERIFY_SSL", "HA_TIMEOUT_S"],
+          "requires_vahub": "0.1.0",
+          "notes": "Narrow tools only. lock_unlock is destructive; leave it out of your policy until you want it."
+        }
+      }
+    },
+    "notify": {
+      "description": "Push notifications to a phone via ntfy or Pushover",
+      "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/notify",
+      "author": "vahub contributors",
+      "tags": ["notifications", "push", "ntfy", "pushover", "first-party"],
+      "latest": "0.1.0",
+      "versions": {
+        "0.1.0": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/notify/v0.1.0",
+            "subdir": "modules/notify"
+          },
+          "requires_config": [],
+          "optional_config": [
+            "NOTIFY_BACKEND",
+            "NTFY_URL",
+            "NTFY_TOPIC",
+            "NTFY_TOKEN",
+            "NTFY_TOKEN_FILE",
+            "PUSHOVER_TOKEN",
+            "PUSHOVER_TOKEN_FILE",
+            "PUSHOVER_USER",
+            "PUSHOVER_USER_FILE"
+          ],
+          "requires_vahub": "0.1.0",
+          "notes": "Which keys you need depends on NOTIFY_BACKEND: NTFY_TOPIC for ntfy, PUSHOVER_TOKEN and PUSHOVER_USER for Pushover."
+        }
+      }
+    },
+    "time": {
+      "description": "The current time and date, as ISO text or as a spoken phrase",
+      "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/time",
+      "author": "vahub contributors",
+      "tags": ["time", "reference", "no-config", "first-party"],
+      "latest": "0.1.0",
+      "versions": {
+        "0.1.0": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/time/v0.1.0",
+            "subdir": "modules/time"
+          },
+          "requires_config": [],
+          "optional_config": ["TZ_DEFAULT"],
+          "requires_vahub": "0.1.0",
+          "notes": "No backend and no credentials. Install this one first to check that your hub can spawn and call a module."
+        }
+      }
+    },
+    "transit": {
+      "description": "Swiss public transport connections and departure boards",
+      "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/transit",
+      "author": "vahub contributors",
+      "tags": ["transport", "switzerland", "sbb", "no-key", "first-party"],
+      "latest": "0.1.0",
+      "versions": {
+        "0.1.0": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/transit/v0.1.0",
+            "subdir": "modules/transit"
+          },
+          "requires_config": [],
+          "optional_config": ["TRANSIT_API_URL", "TZ_DEFAULT"],
+          "requires_vahub": "0.1.0",
+          "notes": "Uses the free transport.opendata.ch API, which needs no account. Read-only."
+        }
+      }
+    }
+  }
+}
