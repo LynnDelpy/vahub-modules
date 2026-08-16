@@ -1,12 +1,45 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-12",
+  "updated_at": "2026-08-16",
   "modules": {
+    "calculator": {
+      "description": "Evaluate arithmetic safely, with common math functions and constants",
+      "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/calculator",
+      "author": "vahub contributors",
+      "tags": [
+        "math",
+        "calculator",
+        "no-config",
+        "offline",
+        "first-party"
+      ],
+      "latest": "0.1.0",
+      "versions": {
+        "0.1.0": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/calculator/v0.1.0",
+            "subdir": "modules/calculator"
+          },
+          "requires_config": [],
+          "optional_config": [],
+          "requires_vahub": "0.1.0",
+          "notes": "Pure computation, no network, never uses eval(). Gives the model a real calculator so it stops doing arithmetic in its head."
+        }
+      }
+    },
     "homeassistant": {
       "description": "Lights, locks and sensor readings via Home Assistant",
       "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/homeassistant",
       "author": "vahub contributors",
-      "tags": ["home-automation", "lights", "locks", "sensors", "first-party"],
+      "tags": [
+        "home-automation",
+        "lights",
+        "locks",
+        "sensors",
+        "first-party"
+      ],
       "latest": "0.2.0",
       "versions": {
         "0.2.0": {
@@ -16,8 +49,15 @@
             "rev": "modules/homeassistant/v0.2.0",
             "subdir": "modules/homeassistant"
           },
-          "requires_config": ["HA_URL", "HA_TOKEN"],
-          "optional_config": ["HA_TOKEN_FILE", "HA_VERIFY_SSL", "HA_TIMEOUT_S"],
+          "requires_config": [
+            "HA_URL",
+            "HA_TOKEN"
+          ],
+          "optional_config": [
+            "HA_TOKEN_FILE",
+            "HA_VERIFY_SSL",
+            "HA_TIMEOUT_S"
+          ],
           "requires_vahub": "0.1.0",
           "notes": "Narrow tools only. lock_unlock is destructive; leave it out of your policy until you want it."
         }
@@ -27,7 +67,13 @@
       "description": "Push notifications to a phone via ntfy or Pushover",
       "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/notify",
       "author": "vahub contributors",
-      "tags": ["notifications", "push", "ntfy", "pushover", "first-party"],
+      "tags": [
+        "notifications",
+        "push",
+        "ntfy",
+        "pushover",
+        "first-party"
+      ],
       "latest": "0.1.0",
       "versions": {
         "0.1.0": {
@@ -58,7 +104,12 @@
       "description": "The current time and date, as ISO text or as a spoken phrase",
       "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/time",
       "author": "vahub contributors",
-      "tags": ["time", "reference", "no-config", "first-party"],
+      "tags": [
+        "time",
+        "reference",
+        "no-config",
+        "first-party"
+      ],
       "latest": "0.1.0",
       "versions": {
         "0.1.0": {
@@ -69,7 +120,9 @@
             "subdir": "modules/time"
           },
           "requires_config": [],
-          "optional_config": ["TZ_DEFAULT"],
+          "optional_config": [
+            "TZ_DEFAULT"
+          ],
           "requires_vahub": "0.1.0",
           "notes": "No backend and no credentials. Install this one first to check that your hub can spawn and call a module."
         }
@@ -79,7 +132,13 @@
       "description": "Swiss public transport connections and departure boards",
       "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/transit",
       "author": "vahub contributors",
-      "tags": ["transport", "switzerland", "sbb", "no-key", "first-party"],
+      "tags": [
+        "transport",
+        "switzerland",
+        "sbb",
+        "no-key",
+        "first-party"
+      ],
       "latest": "0.1.0",
       "versions": {
         "0.1.0": {
@@ -90,9 +149,42 @@
             "subdir": "modules/transit"
           },
           "requires_config": [],
-          "optional_config": ["TRANSIT_API_URL", "TZ_DEFAULT"],
+          "optional_config": [
+            "TRANSIT_API_URL",
+            "TZ_DEFAULT"
+          ],
           "requires_vahub": "0.1.0",
           "notes": "Uses the free transport.opendata.ch API, which needs no account. Read-only."
+        }
+      }
+    },
+    "weather": {
+      "description": "Current weather and a short forecast, from the free Open-Meteo API",
+      "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/weather",
+      "author": "vahub contributors",
+      "tags": [
+        "weather",
+        "forecast",
+        "open-meteo",
+        "no-config",
+        "first-party"
+      ],
+      "latest": "0.1.0",
+      "versions": {
+        "0.1.0": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/weather/v0.1.0",
+            "subdir": "modules/weather"
+          },
+          "requires_config": [],
+          "optional_config": [
+            "WEATHER_API_URL",
+            "GEOCODING_API_URL"
+          ],
+          "requires_vahub": "0.1.0",
+          "notes": "Free public API, no key. Pairs with saved locations: the assistant reads a place's coordinates and asks for its weather."
         }
       }
     }

@@ -1,0 +1,29 @@
+# The manifest the hub reads. `vahub module add weather` copies this into
+# /etc/vahub/modules.d/ and expands {venv}. Validated by the Manifest model.
+schema_version: 1
+name: weather
+version: 0.1.0
+description: Current weather and a short forecast, from the free Open-Meteo API
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/weather
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_weather"]
+
+config:
+  # Open-Meteo needs no key, so there is nothing this module must be given.
+  optional: [WEATHER_API_URL, GEOCODING_API_URL]
+
+health:
+  interval_s: 300
+  timeout_s: 8
+
+tools:
+  geocode:
+    class: read
+    description: Resolve a place name to coordinates and a country
+  current_weather:
+    class: read
+    description: Current temperature, wind and conditions at a latitude/longitude
+  forecast:
+    class: read
+    description: A daily forecast (high, low, conditions) for the next few days
