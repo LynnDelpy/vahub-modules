@@ -97,3 +97,11 @@ open a door.
 ## Licence
 
 MIT. See [LICENSE](LICENSE).
+
+## The vahub project
+
+Three repositories, one project:
+
+- [vahub](https://github.com/LynnDelpy/vahub). The hub itself.
+- [vahub-modules](https://github.com/LynnDelpy/vahub-modules) (this one). The catalog and first-party modules.
+- [vahub-docs](https://github.com/LynnDelpy/vahub-docs). The full documentation.
