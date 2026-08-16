@@ -48,3 +48,26 @@ def test_tool_returns_a_structured_result() -> None:
     assert ok["ok"] is True and ok["result"] == 4
     bad = calculate("nonsense(")
     assert bad["ok"] is False and "error" in bad
+
+
+def test_factorial_is_bounded() -> None:
+    # An unbounded factorial would build a many-million-digit number and hang.
+    assert calculate("factorial(5000000)")["ok"] is False
+    with pytest.raises(CalcError):
+        evaluate("factorial(2000)")
+    assert evaluate("factorial(10)") == 3628800
+
+
+@pytest.mark.parametrize("expr", ["sqrt(-1)", "1/0", "log(0)", "exp(100000)", "acos(5)"])
+def test_math_errors_return_a_result_not_an_exception(expr: str) -> None:
+    # The tool must never raise into the module: a domain or overflow error is an
+    # ordinary calculator error.
+    out = calculate(expr)
+    assert out["ok"] is False and "error" in out
+
+
+def test_nested_exponent_is_refused() -> None:
+    with pytest.raises(CalcError):
+        evaluate("9 ** 9 ** 9")
+    with pytest.raises(CalcError):
+        evaluate("2 ** (10 ** 6)")

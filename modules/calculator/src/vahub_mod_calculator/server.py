@@ -33,6 +33,20 @@ _BINOPS = {
 }
 _UNARYOPS = {ast.UAdd: operator.pos, ast.USub: operator.neg}
 
+# factorial has no natural bound and grows super-exponentially, so factorial of a
+# few million would build a number with millions of digits and hang the process.
+# Cap the argument; a real calculation never needs more.
+_MAX_FACTORIAL = 1000
+
+
+def _factorial(n: Any) -> int:
+    if not isinstance(n, int) or isinstance(n, bool):
+        raise CalcError("factorial needs a whole number")
+    if n < 0 or n > _MAX_FACTORIAL:
+        raise CalcError(f"factorial argument must be between 0 and {_MAX_FACTORIAL}")
+    return math.factorial(n)
+
+
 # A curated, side-effect-free slice of the math module, plus the two constants a
 # person actually types. abs/round/min/max are the builtins people expect.
 _FUNCS: dict[str, Any] = {
@@ -40,7 +54,7 @@ _FUNCS: dict[str, Any] = {
     "sin": math.sin, "cos": math.cos, "tan": math.tan,
     "asin": math.asin, "acos": math.acos, "atan": math.atan, "atan2": math.atan2,
     "log": math.log, "log2": math.log2, "log10": math.log10, "exp": math.exp,
-    "floor": math.floor, "ceil": math.ceil, "factorial": math.factorial,
+    "floor": math.floor, "ceil": math.ceil, "factorial": _factorial,
     "degrees": math.degrees, "radians": math.radians, "hypot": math.hypot,
     "abs": abs, "round": round, "min": min, "max": max,
 }
@@ -120,6 +134,10 @@ def calculate(expression: str) -> dict[str, Any]:
         value = evaluate(expression)
     except CalcError as e:
         return {"ok": False, "error": str(e), "expression": expression}
+    except (ArithmeticError, ValueError, TypeError, RecursionError) as e:
+        # math domain (sqrt(-1)), overflow (exp(1000)), division by zero, and the
+        # like are ordinary calculator errors, not module crashes.
+        return {"ok": False, "error": str(e) or e.__class__.__name__, "expression": expression}
     return {"ok": True, "expression": expression, "result": value}
 
 

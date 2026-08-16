@@ -13,7 +13,7 @@
         "offline",
         "first-party"
       ],
-      "latest": "0.1.0",
+      "latest": "0.1.1",
       "versions": {
         "0.1.0": {
           "source": {
@@ -26,6 +26,18 @@
           "optional_config": [],
           "requires_vahub": "0.1.0",
           "notes": "Pure computation, no network, never uses eval(). Gives the model a real calculator so it stops doing arithmetic in its head."
+        },
+        "0.1.1": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/calculator/v0.1.1",
+            "subdir": "modules/calculator"
+          },
+          "requires_config": [],
+          "optional_config": [],
+          "requires_vahub": "0.1.0",
+          "notes": "Bounds factorial and returns math errors as results (0.1.1). Pure computation, no network, never eval()."
         }
       }
     },

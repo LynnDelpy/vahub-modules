@@ -2,7 +2,7 @@
 # /etc/vahub/modules.d/ and expands {venv}. Validated by the Manifest model.
 schema_version: 1
 name: calculator
-version: 0.1.0
+version: 0.1.1
 description: Evaluate arithmetic safely, with common math functions and constants
 homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/calculator
 
