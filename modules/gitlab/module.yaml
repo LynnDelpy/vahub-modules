@@ -1,0 +1,37 @@
+# The manifest the hub reads. `vahub module add gitlab` copies this into
+# the hub's modules directory and expands {venv}. Validated by the Manifest model.
+schema_version: 1
+name: gitlab
+version: 0.1.0
+description: Your GitLab to-dos, assigned merge requests and issues
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/gitlab
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_gitlab"]
+
+config:
+  # A personal access token with the read_api scope is enough. GITLAB_API_URL
+  # is for a self-managed instance; it defaults to gitlab.com.
+  required: [GITLAB_TOKEN]
+  optional: [GITLAB_API_URL, GITLAB_TIMEOUT_S]
+
+health:
+  interval_s: 300
+  timeout_s: 8
+
+audit:
+  redact: [GITLAB_TOKEN]
+
+tools:
+  summary:
+    class: read
+    description: Counts for the dashboard card, pending to-dos, assigned merge requests and issues
+  todos:
+    class: read
+    description: Your pending to-dos (what needs your attention)
+  assigned_merge_requests:
+    class: read
+    description: Open merge requests assigned to you
+  assigned_issues:
+    class: read
+    description: Open issues assigned to you

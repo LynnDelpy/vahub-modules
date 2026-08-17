@@ -29,6 +29,12 @@ jobs:
             package: vahub_mod_transit
           - path: modules/notify
             package: vahub_mod_notify
+          - path: modules/github
+            package: vahub_mod_github
+          - path: modules/gitlab
+            package: vahub_mod_gitlab
+          - path: modules/email
+            package: vahub_mod_email
           - path: template
             package: vahub_mod_example
     steps:

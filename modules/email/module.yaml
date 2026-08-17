@@ -1,0 +1,35 @@
+# The manifest the hub reads. `vahub module add email` copies this into
+# the hub's modules directory and expands {venv}. Validated by the Manifest model.
+schema_version: 1
+name: email
+version: 0.1.0
+description: Read-only view of a mailbox over IMAP, unread count and recent messages
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/email
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_email"]
+
+config:
+  # IMAP only, and read-only: this module never sends, deletes or marks a message
+  # read. Use an app password where the provider offers one (Gmail, Fastmail,
+  # ...), not your account password.
+  required: [EMAIL_HOST, EMAIL_USERNAME, EMAIL_PASSWORD]
+  optional: [EMAIL_PORT, EMAIL_SSL, EMAIL_MAILBOX, EMAIL_TIMEOUT_S]
+
+health:
+  interval_s: 300
+  timeout_s: 10
+
+audit:
+  redact: [EMAIL_PASSWORD]
+
+tools:
+  summary:
+    class: read
+    description: Unread count, total count and the most recent few messages, for the card
+  list_unread:
+    class: read
+    description: Recent unread messages (from, subject, date); does not mark them read
+  search:
+    class: read
+    description: Search the mailbox for messages whose text matches a query

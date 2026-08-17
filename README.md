@@ -20,6 +20,11 @@ for other people, not a licence to run.
 | [homeassistant](modules/homeassistant) | Lights, locks and sensor readings through Home Assistant. Narrow tools, no generic service call. | `HA_URL`, and `HA_TOKEN` or `HA_TOKEN_FILE` |
 | [transit](modules/transit) | Swiss public transport: connections and departure boards, via transport.opendata.ch. | none, no API key exists |
 | [notify](modules/notify) | Push notifications to a phone via ntfy or Pushover. | ntfy: `NTFY_TOPIC`. Pushover: `PUSHOVER_TOKEN` and `PUSHOVER_USER` |
+| [weather](modules/weather) | Current weather and a short forecast, from the free Open-Meteo API. | none, no API key exists |
+| [calculator](modules/calculator) | Evaluate arithmetic safely, with common math functions. Never uses eval(). | none |
+| [github](modules/github) | Your GitHub notifications, review requests and assigned issues. Read-only, backs a dashboard card. | `GITHUB_TOKEN` |
+| [gitlab](modules/gitlab) | Your GitLab to-dos, assigned merge requests and issues. Read-only, backs a dashboard card. | `GITLAB_TOKEN` |
+| [email](modules/email) | Read-only view of a mailbox over IMAP: unread count and recent messages. | `EMAIL_HOST`, `EMAIL_USERNAME`, `EMAIL_PASSWORD` |
 
 Each module's README lists its tools, its config keys and a policy block you can
 paste into `vahub.yaml`.

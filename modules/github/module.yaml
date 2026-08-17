@@ -1,0 +1,41 @@
+# The manifest the hub reads. `vahub module add github` copies this into
+# the hub's modules directory and expands {venv}. Validated by the Manifest model.
+schema_version: 1
+name: github
+version: 0.1.0
+description: Your GitHub notifications, review requests and assigned issues
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/github
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_github"]
+
+config:
+  # A fine-grained or classic personal access token. Read-only scopes are
+  # enough: notifications, and repo/issue read. GITHUB_API_URL is for GitHub
+  # Enterprise; it defaults to the public API.
+  required: [GITHUB_TOKEN]
+  optional: [GITHUB_API_URL, GITHUB_TIMEOUT_S]
+
+health:
+  interval_s: 300
+  timeout_s: 8
+
+audit:
+  redact: [GITHUB_TOKEN]
+
+tools:
+  summary:
+    class: read
+    description: Counts for the dashboard card, unread notifications, review requests and assigned issues
+  notifications:
+    class: read
+    description: Your unread notifications (repository, title, reason)
+  assigned_issues:
+    class: read
+    description: Open issues assigned to you across all repositories
+  review_requests:
+    class: read
+    description: Open pull requests waiting for your review
+  search_issues:
+    class: read
+    description: Search issues and pull requests with a GitHub search query
