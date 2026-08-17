@@ -52,12 +52,14 @@ def _clamp(value: Any, default: int, lo: int, hi: int) -> int:
 
 
 def _total(response: httpx.Response, data: Any) -> int | None:
-    """The count of matching records. GitLab returns it in the X-Total header for
-    offset pagination; fall back to the length of the page when it is absent."""
+    """The count of matching records, from GitLab's X-Total header. When the
+    header is absent (GitLab omits it for very large or expensive result sets)
+    the true total is unknown, so this returns None rather than the page length,
+    which for a per_page=1 count query would misreport a large set as "1"."""
     header = response.headers.get("x-total")
     if header and header.isdigit():
         return int(header)
-    return len(data) if isinstance(data, list) else None
+    return None
 
 
 async def _get(path: str, params: dict[str, Any] | None = None) -> tuple[Any, int | None, str | None]:
@@ -205,7 +207,9 @@ async def health() -> dict[str, Any]:
         return {"ok": False, "backend": "gitlab", "latency_ms": None, "detail": "GITLAB_TOKEN is not set"}
     started = time.monotonic()
     try:
-        response = await _http.get("/user")
+        # Bound the probe below the manifest's health.timeout_s (8s), so a backend
+        # that silently drops the connection cannot make __health miss its window.
+        response = await _http.get("/user", timeout=min(_timeout(), 6.0))
         ok = response.status_code == 200
         return {
             "ok": ok,

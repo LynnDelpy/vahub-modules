@@ -52,7 +52,7 @@
         "dashboard",
         "first-party"
       ],
-      "latest": "0.1.0",
+      "latest": "0.1.1",
       "versions": {
         "0.1.0": {
           "source": {
@@ -74,6 +74,27 @@
           ],
           "requires_vahub": "0.1.0",
           "notes": "Read-only IMAP: never sends, deletes or marks a message read, and reads only headers. Use a provider app password."
+        },
+        "0.1.1": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/email/v0.1.1",
+            "subdir": "modules/email"
+          },
+          "requires_config": [
+            "EMAIL_HOST",
+            "EMAIL_USERNAME",
+            "EMAIL_PASSWORD"
+          ],
+          "optional_config": [
+            "EMAIL_PORT",
+            "EMAIL_SSL",
+            "EMAIL_MAILBOX",
+            "EMAIL_TIMEOUT_S"
+          ],
+          "requires_vahub": "0.1.0",
+          "notes": "Bounds the health probe below its timeout and escapes IMAP search terms (0.1.1). Read-only: never sends, deletes or marks a message read."
         }
       }
     },
@@ -89,7 +110,7 @@
         "read-only",
         "first-party"
       ],
-      "latest": "0.1.0",
+      "latest": "0.1.1",
       "versions": {
         "0.1.0": {
           "source": {
@@ -107,6 +128,23 @@
           ],
           "requires_vahub": "0.1.0",
           "notes": "Read-only. A fine-grained token with read scopes is enough. Set GITHUB_API_URL for GitHub Enterprise."
+        },
+        "0.1.1": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/github/v0.1.1",
+            "subdir": "modules/github"
+          },
+          "requires_config": [
+            "GITHUB_TOKEN"
+          ],
+          "optional_config": [
+            "GITHUB_API_URL",
+            "GITHUB_TIMEOUT_S"
+          ],
+          "requires_vahub": "0.1.0",
+          "notes": "Bounds the health probe below its timeout (0.1.1). Read-only. A fine-grained token with read scopes is enough. Set GITHUB_API_URL for GitHub Enterprise."
         }
       }
     },
@@ -122,7 +160,7 @@
         "read-only",
         "first-party"
       ],
-      "latest": "0.1.0",
+      "latest": "0.1.1",
       "versions": {
         "0.1.0": {
           "source": {
@@ -140,6 +178,23 @@
           ],
           "requires_vahub": "0.1.0",
           "notes": "Read-only. A token with the read_api scope is enough. Set GITLAB_API_URL for a self-managed instance."
+        },
+        "0.1.1": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/gitlab/v0.1.1",
+            "subdir": "modules/gitlab"
+          },
+          "requires_config": [
+            "GITLAB_TOKEN"
+          ],
+          "optional_config": [
+            "GITLAB_API_URL",
+            "GITLAB_TIMEOUT_S"
+          ],
+          "requires_vahub": "0.1.0",
+          "notes": "Bounds the health probe and reports an unknown count as unknown, not 1 (0.1.1). Read-only. A token with the read_api scope is enough."
         }
       }
     },

@@ -55,8 +55,9 @@ def test_total_prefers_the_header(monkeypatch) -> None:
 
     response = httpx.Response(200, headers={"x-total": "42"})
     assert server._total(response, [{"a": 1}]) == 42
+    # No header: the true total is unknown, reported as None (not the page length).
     bare = httpx.Response(200)
-    assert server._total(bare, [{"a": 1}, {"b": 2}]) == 2
+    assert server._total(bare, [{"a": 1}, {"b": 2}]) is None
 
 
 def test_clamp_keeps_the_limit_in_range() -> None:

@@ -62,3 +62,11 @@ def test_health_without_configuration_is_a_clean_not_ok(monkeypatch) -> None:
     monkeypatch.setattr(server, "HOST", "")
     health = asyncio.run(server.health())
     assert health["ok"] is False and "EMAIL_HOST" in health["detail"]
+
+
+def test_imap_quote_escapes_and_strips() -> None:
+    assert server._imap_quote("hello") == '"hello"'
+    assert server._imap_quote('a"b') == '"a\\"b"'  # embedded quote escaped
+    assert server._imap_quote("a\\b") == '"a\\\\b"'  # embedded backslash escaped
+    stripped = server._imap_quote("a\rb\nc")
+    assert "\r" not in stripped and "\n" not in stripped  # no command injection

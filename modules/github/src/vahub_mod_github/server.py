@@ -137,7 +137,9 @@ async def summary() -> dict[str, Any]:
     """A one-call overview for the dashboard card: how many notifications are
     unread, how many pull requests want your review, how many issues are
     assigned to you, and the most recent few notifications."""
-    notifications, error = await _get("/notifications", {"per_page": 30})
+    # 50 is the notifications page maximum; the count is a page view, so a very
+    # full inbox is reported as "50" rather than undercounted at a smaller page.
+    notifications, error = await _get("/notifications", {"per_page": 50})
     if error is not None:
         return {"configured": bool(TOKEN), "error": error}
     reviews, _ = await _get("/search/issues", {"q": "is:open is:pr review-requested:@me", "per_page": 1})
@@ -218,7 +220,9 @@ async def health() -> dict[str, Any]:
         return {"ok": False, "backend": "github", "latency_ms": None, "detail": "GITHUB_TOKEN is not set"}
     started = time.monotonic()
     try:
-        response = await _http.get("/user")
+        # Bound the probe below the manifest's health.timeout_s (8s), so a backend
+        # that silently drops the connection cannot make __health miss its window.
+        response = await _http.get("/user", timeout=min(_timeout(), 6.0))
         ok = response.status_code == 200
         return {
             "ok": ok,

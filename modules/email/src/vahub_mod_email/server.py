@@ -95,6 +95,16 @@ def header_summary(raw: bytes) -> dict[str, Any]:
     }
 
 
+def _imap_quote(text: str) -> str:
+    """A safe IMAP quoted-string for a search term: strip CR/LF so it cannot
+    inject a second command, and backslash-escape the two characters special
+    inside a quoted string (backslash and double-quote) so a term containing them
+    stays one valid string rather than silently matching nothing."""
+    safe = text.replace("\r", " ").replace("\n", " ")[:200]
+    safe = safe.replace("\\", "\\\\").replace('"', '\\"')
+    return f'"{safe}"'
+
+
 def _extract_header_bytes(fetched: Any) -> bytes:
     """imaplib returns a fetch result as a list mixing tuples and flag strings;
     the header bytes are the second element of the tuple part."""
@@ -107,11 +117,12 @@ def _extract_header_bytes(fetched: Any) -> bytes:
 # --------------------------------------------------------------------------
 # blocking IMAP work (runs in a worker thread)
 # --------------------------------------------------------------------------
-def _connect() -> imaplib.IMAP4:
+def _connect(timeout: float | None = None) -> imaplib.IMAP4:
+    t = _timeout() if timeout is None else timeout
     if _use_ssl():
-        conn: imaplib.IMAP4 = imaplib.IMAP4_SSL(HOST, _port(), timeout=_timeout())
+        conn: imaplib.IMAP4 = imaplib.IMAP4_SSL(HOST, _port(), timeout=t)
     else:
-        conn = imaplib.IMAP4(HOST, _port(), timeout=_timeout())
+        conn = imaplib.IMAP4(HOST, _port(), timeout=t)
     conn.login(USERNAME, PASSWORD)
     return conn
 
@@ -145,10 +156,7 @@ def _search_text(text: str, limit: int) -> list[dict[str, Any]]:
     conn = _connect()
     try:
         conn.select(MAILBOX, readonly=True)
-        # Strip CR/LF so the query cannot inject a second IMAP command, and pass
-        # it as a quoted string.
-        safe = text.replace("\r", " ").replace("\n", " ")[:200]
-        ids = _ids(conn.search(None, "TEXT", f'"{safe}"'))
+        ids = _ids(conn.search(None, "TEXT", _imap_quote(text)))
         recent = list(reversed(ids))[:limit]
         return [_one_header(conn, mid) for mid in recent]
     finally:
@@ -163,7 +171,10 @@ def _ids(result: tuple[str, list[Any]]) -> list[bytes]:
 
 
 def _health_check() -> None:
-    conn = _connect()
+    # Bound the probe below the manifest's health.timeout_s (10s). The work runs
+    # in a thread the hub cannot cancel, so a silent-drop backend must be capped
+    # here or the thread would run the full connection timeout past the budget.
+    conn = _connect(timeout=min(_timeout(), 6.0))
     try:
         conn.select(MAILBOX, readonly=True)
     finally:

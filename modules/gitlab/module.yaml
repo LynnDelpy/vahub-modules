@@ -2,7 +2,7 @@
 # the hub's modules directory and expands {venv}. Validated by the Manifest model.
 schema_version: 1
 name: gitlab
-version: 0.1.0
+version: 0.1.1
 description: Your GitLab to-dos, assigned merge requests and issues
 homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/gitlab
 
