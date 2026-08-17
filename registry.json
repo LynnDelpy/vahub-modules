@@ -52,7 +52,7 @@
         "dashboard",
         "first-party"
       ],
-      "latest": "0.1.1",
+      "latest": "0.1.2",
       "versions": {
         "0.1.0": {
           "source": {
@@ -95,6 +95,27 @@
           ],
           "requires_vahub": "0.1.0",
           "notes": "Bounds the health probe below its timeout and escapes IMAP search terms (0.1.1). Read-only: never sends, deletes or marks a message read."
+        },
+        "0.1.2": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/email/v0.1.2",
+            "subdir": "modules/email"
+          },
+          "requires_config": [
+            "EMAIL_HOST",
+            "EMAIL_USERNAME",
+            "EMAIL_PASSWORD"
+          ],
+          "optional_config": [
+            "EMAIL_PORT",
+            "EMAIL_SSL",
+            "EMAIL_MAILBOX",
+            "EMAIL_TIMEOUT_S"
+          ],
+          "requires_vahub": "0.1.0",
+          "notes": "Retries search with a UTF-8 charset so non-ASCII query terms work (0.1.2). Read-only: never sends, deletes or marks a message read."
         }
       }
     },

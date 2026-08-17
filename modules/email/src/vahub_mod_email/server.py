@@ -156,7 +156,16 @@ def _search_text(text: str, limit: int) -> list[dict[str, Any]]:
     conn = _connect()
     try:
         conn.select(MAILBOX, readonly=True)
-        ids = _ids(conn.search(None, "TEXT", _imap_quote(text)))
+        term = _imap_quote(text)
+        try:
+            ids = _ids(conn.search(None, "TEXT", term))
+        except (UnicodeEncodeError, imaplib.IMAP4.error):
+            # imaplib encodes str criteria as ASCII, so a non-ASCII term (accents,
+            # non-Latin scripts) raises before the request is sent. Retry with an
+            # explicit UTF-8 charset, passing the term as raw UTF-8 bytes so it is
+            # not re-encoded as ASCII. Servers that reject the charset surface as
+            # an error to the caller, which is the best we can do there.
+            ids = _ids(conn.search("UTF-8", "TEXT", term.encode("utf-8")))
         recent = list(reversed(ids))[:limit]
         return [_one_header(conn, mid) for mid in recent]
     finally:
