@@ -25,6 +25,10 @@ for other people, not a licence to run.
 | [github](modules/github) | Your GitHub notifications, review requests and assigned issues. Read-only, backs a dashboard card. | `GITHUB_TOKEN` |
 | [gitlab](modules/gitlab) | Your GitLab to-dos, assigned merge requests and issues. Read-only, backs a dashboard card. | `GITLAB_TOKEN` |
 | [email](modules/email) | Read-only view of a mailbox over IMAP: unread count and recent messages. | `EMAIL_HOST`, `EMAIL_USERNAME`, `EMAIL_PASSWORD` |
+| [calendar](modules/calendar) | Upcoming events from published ICS feeds. Read-only, backs a dashboard card. | `CALENDAR_ICS_URLS` |
+| [rss](modules/rss) | Latest items from your RSS and Atom feeds. Read-only, backs a dashboard card. | `RSS_FEEDS` |
+| [obsidian](modules/obsidian) | Read-only view of an Obsidian vault: daily note, recent notes and search. | `OBSIDIAN_VAULT_PATH` |
+| [homelab](modules/homelab) | Up/down status of your self-hosted services, via HTTP and TCP checks. | `HOMELAB_TARGETS` |
 
 Each module's README lists its tools, its config keys and a policy block you can
 paste into `vahub.yaml`.

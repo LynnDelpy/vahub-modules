@@ -1,0 +1,39 @@
+# The manifest the hub reads. `vahub module add obsidian` copies this into
+# the hub's modules directory and expands {venv}. Validated by the Manifest model.
+schema_version: 1
+name: obsidian
+version: 0.1.0
+description: Read-only view of an Obsidian vault, daily note, recent notes and search
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/obsidian
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_obsidian"]
+
+config:
+  # OBSIDIAN_VAULT_PATH is the vault directory the module may read. OBSIDIAN_SUBDIR
+  # narrows that to a subtree (e.g. "Projects"), so you can expose part of a vault
+  # and keep the rest out of reach. OBSIDIAN_DAILY_DIR and OBSIDIAN_DAILY_FORMAT
+  # locate your daily notes; the format is a strftime pattern (default %Y-%m-%d).
+  required: [OBSIDIAN_VAULT_PATH]
+  optional: [OBSIDIAN_SUBDIR, OBSIDIAN_DAILY_DIR, OBSIDIAN_DAILY_FORMAT, TZ_DEFAULT]
+
+health:
+  interval_s: 300
+  timeout_s: 5
+
+tools:
+  summary:
+    class: read
+    description: Today's daily note and the notes touched most recently, for the card
+  daily:
+    class: read
+    description: The daily note for a date (default today)
+  search:
+    class: read
+    description: Find notes whose filename or content matches a query
+  note:
+    class: read
+    description: Read one note by its vault-relative path
+  recent:
+    class: read
+    description: The notes modified most recently, newest first

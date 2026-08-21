@@ -1,0 +1,36 @@
+# The manifest the hub reads. `vahub module add calendar` copies this into
+# the hub's modules directory and expands {venv}. Validated by the Manifest model.
+schema_version: 1
+name: calendar
+version: 0.1.0
+description: Upcoming events from ICS calendar feed subscriptions, read-only
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/calendar
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_calendar"]
+
+config:
+  # One or more published .ics feed URLs (whitespace, comma or newline
+  # separated): a Nextcloud/Radicale export, a Google "secret iCal address",
+  # etc. CALENDAR_USERNAME/PASSWORD add HTTP basic auth for a protected feed.
+  # TZ_DEFAULT sets the zone used for "today" and "this week".
+  required: [CALENDAR_ICS_URLS]
+  optional: [CALENDAR_USERNAME, CALENDAR_PASSWORD, CALENDAR_TIMEOUT_S, TZ_DEFAULT]
+
+health:
+  interval_s: 600
+  timeout_s: 10
+
+audit:
+  redact: [CALENDAR_PASSWORD]
+
+tools:
+  summary:
+    class: read
+    description: Counts for the dashboard card (today, next 7 days) and the next few upcoming events
+  agenda:
+    class: read
+    description: Upcoming events over the next few days
+  search:
+    class: read
+    description: Find upcoming events whose title, location or calendar matches a query

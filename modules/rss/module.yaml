@@ -1,0 +1,35 @@
+# The manifest the hub reads. `vahub module add rss` copies this into the
+# hub's modules directory and expands {venv}. Validated by the Manifest model.
+schema_version: 1
+name: rss
+version: 0.1.0
+description: Latest items from your RSS and Atom feeds, read-only
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/rss
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_rss"]
+
+config:
+  # One or more feed URLs (whitespace, comma or newline separated). RSS and Atom
+  # both work. RSS_MAX_PER_FEED caps how many items are read from each feed
+  # before they are merged.
+  required: [RSS_FEEDS]
+  optional: [RSS_TIMEOUT_S, RSS_MAX_PER_FEED]
+
+health:
+  interval_s: 900
+  timeout_s: 10
+
+tools:
+  summary:
+    class: read
+    description: The most recent items across all feeds, for the dashboard card
+  latest:
+    class: read
+    description: The most recent items across all your feeds, newest first
+  feed:
+    class: read
+    description: Items from one feed, matched by its title or host
+  search:
+    class: read
+    description: Find items whose title, summary or feed matches a query

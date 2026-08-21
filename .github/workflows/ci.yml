@@ -35,6 +35,14 @@ jobs:
             package: vahub_mod_gitlab
           - path: modules/email
             package: vahub_mod_email
+          - path: modules/calendar
+            package: vahub_mod_calendar
+          - path: modules/rss
+            package: vahub_mod_rss
+          - path: modules/obsidian
+            package: vahub_mod_obsidian
+          - path: modules/homelab
+            package: vahub_mod_homelab
           - path: template
             package: vahub_mod_example
     steps:

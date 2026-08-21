@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-16",
+  "updated_at": "2026-08-21",
   "modules": {
     "calculator": {
       "description": "Evaluate arithmetic safely, with common math functions and constants",
@@ -38,6 +38,40 @@
           "optional_config": [],
           "requires_vahub": "0.1.0",
           "notes": "Bounds factorial and returns math errors as results (0.1.1). Pure computation, no network, never eval()."
+        }
+      }
+    },
+    "calendar": {
+      "description": "Upcoming events from ICS calendar feed subscriptions, read-only",
+      "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/calendar",
+      "author": "vahub contributors",
+      "tags": [
+        "calendar",
+        "ics",
+        "read-only",
+        "dashboard",
+        "first-party"
+      ],
+      "latest": "0.1.0",
+      "versions": {
+        "0.1.0": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/calendar/v0.1.0",
+            "subdir": "modules/calendar"
+          },
+          "requires_config": [
+            "CALENDAR_ICS_URLS"
+          ],
+          "optional_config": [
+            "CALENDAR_USERNAME",
+            "CALENDAR_PASSWORD",
+            "CALENDAR_TIMEOUT_S",
+            "TZ_DEFAULT"
+          ],
+          "requires_vahub": "0.1.0",
+          "notes": "Read-only ICS feed subscriptions (a Nextcloud/Radicale export, a Google secret iCal address, ...). Never writes; recurring events are expanded within the window."
         }
       }
     },
@@ -219,6 +253,39 @@
         }
       }
     },
+    "homelab": {
+      "description": "Up/down status of your self-hosted services via HTTP and TCP checks",
+      "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/homelab",
+      "author": "vahub contributors",
+      "tags": [
+        "homelab",
+        "monitoring",
+        "uptime",
+        "dashboard",
+        "read-only",
+        "first-party"
+      ],
+      "latest": "0.1.0",
+      "versions": {
+        "0.1.0": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/homelab/v0.1.0",
+            "subdir": "modules/homelab"
+          },
+          "requires_config": [
+            "HOMELAB_TARGETS"
+          ],
+          "optional_config": [
+            "HOMELAB_TIMEOUT_S",
+            "HOMELAB_VERIFY_SSL"
+          ],
+          "requires_vahub": "0.1.0",
+          "notes": "Read-only probes: an HTTP GET (no redirects, no body) or a TCP connect against the targets you list. Health reports on the module, not the services."
+        }
+      }
+    },
     "homeassistant": {
       "description": "Lights, locks and sensor readings via Home Assistant",
       "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/homeassistant",
@@ -287,6 +354,75 @@
           ],
           "requires_vahub": "0.1.0",
           "notes": "Which keys you need depends on NOTIFY_BACKEND: NTFY_TOPIC for ntfy, PUSHOVER_TOKEN and PUSHOVER_USER for Pushover."
+        }
+      }
+    },
+    "obsidian": {
+      "description": "Read-only view of an Obsidian vault: daily note, recent notes and search",
+      "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/obsidian",
+      "author": "vahub contributors",
+      "tags": [
+        "obsidian",
+        "notes",
+        "markdown",
+        "read-only",
+        "dashboard",
+        "first-party"
+      ],
+      "latest": "0.1.0",
+      "versions": {
+        "0.1.0": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/obsidian/v0.1.0",
+            "subdir": "modules/obsidian"
+          },
+          "requires_config": [
+            "OBSIDIAN_VAULT_PATH"
+          ],
+          "optional_config": [
+            "OBSIDIAN_SUBDIR",
+            "OBSIDIAN_DAILY_DIR",
+            "OBSIDIAN_DAILY_FORMAT",
+            "TZ_DEFAULT"
+          ],
+          "requires_vahub": "0.1.0",
+          "notes": "Read-only. Reads only Markdown files under the vault (optionally narrowed by OBSIDIAN_SUBDIR); every path is confined to that root."
+        }
+      }
+    },
+    "rss": {
+      "description": "Latest items from your RSS and Atom feeds, read-only",
+      "homepage": "https://github.com/LynnDelpy/vahub-modules/tree/main/modules/rss",
+      "author": "vahub contributors",
+      "tags": [
+        "rss",
+        "atom",
+        "feeds",
+        "news",
+        "read-only",
+        "dashboard",
+        "first-party"
+      ],
+      "latest": "0.1.0",
+      "versions": {
+        "0.1.0": {
+          "source": {
+            "type": "git",
+            "url": "https://github.com/LynnDelpy/vahub-modules",
+            "rev": "modules/rss/v0.1.0",
+            "subdir": "modules/rss"
+          },
+          "requires_config": [
+            "RSS_FEEDS"
+          ],
+          "optional_config": [
+            "RSS_TIMEOUT_S",
+            "RSS_MAX_PER_FEED"
+          ],
+          "requires_vahub": "0.1.0",
+          "notes": "Read-only. Fetches and parses RSS and Atom feeds and merges the items newest first. A feed that fails is reported and never hides the others."
         }
       }
     },

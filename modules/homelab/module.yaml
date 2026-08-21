@@ -1,0 +1,31 @@
+# The manifest the hub reads. `vahub module add homelab` copies this into
+# the hub's modules directory and expands {venv}. Validated by the Manifest model.
+schema_version: 1
+name: homelab
+version: 0.1.0
+description: Up/down status of your self-hosted services via HTTP and TCP checks
+homepage: https://github.com/LynnDelpy/vahub-modules/tree/main/modules/homelab
+
+runtime:
+  command: ["{venv}/bin/python", "-m", "vahub_mod_homelab"]
+
+config:
+  # HOMELAB_TARGETS is a JSON array of targets. Each is {"name": ...} with either
+  # a "url" (HTTP check, optional "expect_status") or a "host" and "port" (TCP
+  # check). Example:
+  #   [{"name":"Nextcloud","url":"https://cloud.home","expect_status":200},
+  #    {"name":"SSH","host":"10.0.0.2","port":22}]
+  required: [HOMELAB_TARGETS]
+  optional: [HOMELAB_TIMEOUT_S, HOMELAB_VERIFY_SSL]
+
+health:
+  interval_s: 120
+  timeout_s: 8
+
+tools:
+  summary:
+    class: read
+    description: Up/down counts and per-target status for the dashboard card
+  check:
+    class: read
+    description: Probe every target now, or just the one named
